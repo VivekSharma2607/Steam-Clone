@@ -1,0 +1,11 @@
+<div class="search-container">
+    <form class="search-form" #form = "ngForm" (ngSubmit)="onSubmit(form)">
+        <span class="logo" routerLink="/"><i class="fa-brands fa-steam"></i> Steam</span>
+        <input class="search-input" 
+        name="search" 
+        ngModel 
+        placeholder="Enter the Game Name" 
+        />
+        <button class="search-button">Submit</button>
+    </form>
+</div>
