@@ -10,42 +10,48 @@ import { HttpService } from 'src/app/services/http.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
-
+export class HomeComponent implements OnInit, OnDestroy {
   public sort: string;
-  public game: Array<Game>;
+  public games: Array<Game>;
   private routeSub: Subscription;
-  private gamesub: Subscription
-  constructor(private httpService: HttpService, private router: Router, private activateRoute: ActivatedRoute) { }
+  private gameSub: Subscription;
 
+  constructor(
+    private httpService: HttpService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.routeSub = this.activateRoute.params.subscribe((params: Params) => {
+    this.routeSub = this.activatedRoute.params.subscribe((params: Params) => {
       if (params['game-search']) {
         this.searchGames('metacrit', params['game-search']);
       } else {
         this.searchGames('metacrit');
       }
-    })
+    });
   }
+
   searchGames(sort: string, search?: string): void {
-    this.gamesub = this.httpService
+    this.gameSub = this.httpService
       .getGameList(sort, search)
       .subscribe((gameList: APIResponse<Game>) => {
-        this.game = gameList.results;
-        console.log(gameList)
-      })
+        this.games = gameList.results;
+        console.log(gameList);
+      });
   }
+
   openGameDetails(id: string): void {
-    this.router.navigate(['details', id])
+    this.router.navigate(['details', id]);
   }
+
   ngOnDestroy(): void {
-    if (this.gamesub) {
-      this.gamesub.unsubscribe()
+    if (this.gameSub) {
+      this.gameSub.unsubscribe();
     }
 
     if (this.routeSub) {
-      this.routeSub.unsubscribe()
+      this.routeSub.unsubscribe();
     }
   }
+
 }
